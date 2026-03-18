@@ -1,0 +1,2 @@
+import{c as t}from"./f0a0a9e6-ipaz2hr6ifllfz2s.js";const e=t("CircleArrowOutDownRight",[["path",{d:"M12 22a10 10 0 1 1 10-10",key:"130bv5"}],["path",{d:"M22 22 12 12",key:"131aw7"}],["path",{d:"M22 16v6h-6",key:"1gvm70"}]]),r=Object.freeze(Object.defineProperty({__proto__:null,default:e},Symbol.toStringTag,{value:"Module"}));const a=Object.freeze(Object.defineProperty({__proto__:null,default:e},Symbol.toStringTag,{value:"Module"}));export{e as C,a,r as c};
+//# sourceMappingURL=19c4a8ef-jct3qldbztf93ig8.js.map

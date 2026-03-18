@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>DOCX Preview</title>
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.3.1/dist/purify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docx-preview@0.3.7/dist/docx-preview.min.js"></script>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        background: #ffffff;
+        color: #0f172a;
+      }
+
+      body {
+        overflow: hidden;
+      }
+
+      .shell {
+        display: flex;
+        height: 100%;
+        width: 100%;
+        flex-direction: column;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .loading,
+      .error {
+        display: flex;
+        height: 100%;
+        width: 100%;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+      }
+
+      .spinner {
+        height: 28px;
+        width: 28px;
+        border: 3px solid rgba(15, 23, 42, 0.12);
+        border-top-color: rgba(15, 23, 42, 0.72);
+        border-radius: 999px;
+        animation: spin 0.8s linear infinite;
+      }
+
+      .error-card {
+        display: flex;
+        max-width: 420px;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        text-align: center;
+      }
+
+      .error-message {
+        margin: 0;
+        font-size: 14px;
+        line-height: 20px;
+      }
+
+      .retry-button {
+        border: 1px solid rgba(15, 23, 42, 0.12);
+        border-radius: 999px;
+        background: #ffffff;
+        color: #0f172a;
+        cursor: pointer;
+        font: inherit;
+        padding: 8px 16px;
+      }
+
+      .viewer {
+        flex: 1;
+        min-height: 0;
+        overflow-x: auto;
+        overflow-y: auto;
+        padding-bottom: 24px;
+      }
+
+      .viewer .recall-docx-viewer {
+        min-height: 100%;
+      }
+
+      .viewer .recall-docx {
+        margin: 0 !important;
+        max-width: 100%;
+        overflow: auto !important;
+        padding: 0 16px 100px !important;
+      }
+
+      .viewer .recall-docx-wrapper {
+        display: flex;
+        width: max-content;
+        min-width: 100%;
+        align-items: flex-start;
+        background: transparent;
+        padding: 0 !important;
+      }
+
+      @media (min-width: 640px) {
+        .viewer .recall-docx {
+          margin-bottom: 32px !important;
+          padding: 72px !important;
+        }
+
+        .viewer .recall-docx-wrapper {
+          align-items: center;
+          padding-left: 20px !important;
+          padding-right: 20px !important;
+          padding-top: 30px !important;
+        }
+      }
+
+      @keyframes spin {
+        from {
+          transform: rotate(0deg);
+        }
+
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <div id="loading" class="loading">
+        <div class="spinner" aria-label="Loading"></div>
+      </div>
+      <div id="error" class="error hidden">
+        <div class="error-card">
+          <p id="error-message" class="error-message"></p>
+          <button id="retry-button" class="retry-button hidden" type="button">
+            Retry
+          </button>
+        </div>
+      </div>
+      <div id="viewer" class="viewer hidden">
+        <div id="content"></div>
+      </div>
+    </div>
+    <script>
+      (() => {
+        const READY_MESSAGE_TYPE = "chatgpt.docx_previewer.ready";
+        const PAYLOAD_MESSAGE_TYPE = "chatgpt.docx_previewer.payload";
+        const RETRY_MESSAGE_TYPE = "chatgpt.docx_previewer.retry";
+        const DOCX_RENDER_OPTIONS = {
+          className: "recall-docx",
+          inWrapper: true,
+          ignoreWidth: true,
+          breakPages: true,
+          renderChanges: false,
+          renderComments: false,
+          renderAltChunks: false,
+          useBase64URL: true,
+          ignoreLastRenderedPageBreak: true,
+        };
+        const DOCX_ALLOWED_TAGS = [
+          "a",
+          "b",
+          "br",
+          "caption",
+          "code",
+          "col",
+          "colgroup",
+          "div",
+          "em",
+          "h1",
+          "h2",
+          "h3",
+          "h4",
+          "h5",
+          "h6",
+          "hr",
+          "i",
+          "img",
+          "li",
+          "ol",
+          "p",
+          "pre",
+          "small",
+          "span",
+          "strong",
+          "style",
+          "sub",
+          "sup",
+          "table",
+          "tbody",
+          "td",
+          "tfoot",
+          "th",
+          "thead",
+          "tr",
+          "u",
+          "ul",
+        ];
+        const DOCX_ALLOWED_ATTR = [
+          "align",
+          "alt",
+          "class",
+          "colspan",
+          "dir",
+          "height",
+          "href",
+          "id",
+          "lang",
+          "referrerpolicy",
+          "rel",
+          "rowspan",
+          "scope",
+          "src",
+          "style",
+          "target",
+          "title",
+          "valign",
+          "width",
+        ];
+        const DOCX_ALLOWED_ANCHOR_URI_REGEXP =
+          /^(?:(?:https?|mailto|tel):|#|\/|\.{1,2}\/)/i;
+        const DOCX_ALLOWED_EMBEDDED_URI_REGEXP = /^(?:data:|blob:)/i;
+        const DOCX_ALLOWED_URI_REGEXP =
+          /^(?:(?:https?|mailto|tel):|#|\/|\.{1,2}\/|data:|blob:)/i;
+        const channelToken = (() => {
+          try {
+            const params = new URLSearchParams(window.location.hash.slice(1));
+            const value = params.get("channelToken");
+            return value && value.length > 0 ? value : null;
+          } catch {
+            return null;
+          }
+        })();
+        const expectedParentOrigin = (() => {
+          try {
+            // This previewer is only embedded from a same-origin route in the app.
+            // Trusting the previewer URL's own origin prevents arbitrary third-party
+            // parents from becoming "trusted" just by embedding the iframe.
+            return new URL(window.location.href).origin;
+          } catch {
+            return null;
+          }
+        })();
+
+        const loadingEl = document.getElementById("loading");
+        const errorEl = document.getElementById("error");
+        const errorMessageEl = document.getElementById("error-message");
+        const retryButtonEl = document.getElementById("retry-button");
+        const viewerEl = document.getElementById("viewer");
+        const contentEl = document.getElementById("content");
+        let activeRenderToken = 0;
+
+        function showLoading() {
+          loadingEl.classList.remove("hidden");
+          errorEl.classList.add("hidden");
+          viewerEl.classList.add("hidden");
+        }
+
+        function showError(message, retryable) {
+          errorMessageEl.textContent = message;
+          retryButtonEl.classList.toggle("hidden", !retryable);
+          loadingEl.classList.add("hidden");
+          viewerEl.classList.add("hidden");
+          errorEl.classList.remove("hidden");
+        }
+
+        function postMessageToParent(message) {
+          if (expectedParentOrigin == null || channelToken == null) {
+            showError("Unable to load the file preview.", false);
+            return;
+          }
+
+          window.parent.postMessage(
+            { ...message, channelToken },
+            expectedParentOrigin
+          );
+        }
+
+        function sanitizeAnchorNodes(fragment) {
+          for (const link of fragment.querySelectorAll("a")) {
+            const href = (link.getAttribute("href") || "").trim();
+            const isAllowedHref =
+              href.length > 0 && DOCX_ALLOWED_ANCHOR_URI_REGEXP.test(href);
+            const isLocalAnchor = href.startsWith("#");
+            const isWebLink = /^https?:/i.test(href);
+
+            link.removeAttribute("download");
+            link.removeAttribute("ping");
+
+            if (!isAllowedHref) {
+              link.removeAttribute("href");
+              link.removeAttribute("target");
+              link.removeAttribute("rel");
+              link.removeAttribute("referrerpolicy");
+              continue;
+            }
+
+            if (isWebLink) {
+              link.setAttribute("target", "_blank");
+              link.setAttribute("rel", "noopener noreferrer nofollow");
+              link.setAttribute("referrerpolicy", "no-referrer");
+              continue;
+            }
+
+            if (isLocalAnchor) {
+              link.removeAttribute("target");
+              link.removeAttribute("rel");
+              link.removeAttribute("referrerpolicy");
+              continue;
+            }
+
+            link.removeAttribute("target");
+            link.removeAttribute("rel");
+            link.removeAttribute("referrerpolicy");
+          }
+        }
+
+        function sanitizeImageNodes(fragment) {
+          for (const image of fragment.querySelectorAll("img[src]")) {
+            const source = (image.getAttribute("src") || "").trim();
+            if (!DOCX_ALLOWED_EMBEDDED_URI_REGEXP.test(source)) {
+              image.removeAttribute("src");
+            }
+          }
+        }
+
+        function sanitizeRenderedDocx(container) {
+          const sanitizedDocx = window.DOMPurify.sanitize(container, {
+            USE_PROFILES: { html: true },
+            ALLOWED_TAGS: DOCX_ALLOWED_TAGS,
+            ALLOWED_ATTR: DOCX_ALLOWED_ATTR,
+            ALLOWED_URI_REGEXP: DOCX_ALLOWED_URI_REGEXP,
+            FORBID_ATTR: ["srcdoc"],
+            ALLOW_DATA_ATTR: false,
+            ALLOW_UNKNOWN_PROTOCOLS: false,
+            KEEP_CONTENT: true,
+            RETURN_DOM_FRAGMENT: true,
+          });
+
+          sanitizeAnchorNodes(sanitizedDocx);
+          sanitizeImageNodes(sanitizedDocx);
+
+          return sanitizedDocx;
+        }
+
+        async function renderDocumentData(documentData) {
+          const renderToken = ++activeRenderToken;
+          const detachedContainer = document.createElement("div");
+          await window.docx.renderAsync(
+            documentData,
+            detachedContainer,
+            detachedContainer,
+            DOCX_RENDER_OPTIONS
+          );
+          const sanitizedDocx = sanitizeRenderedDocx(detachedContainer);
+          if (renderToken !== activeRenderToken) {
+            return;
+          }
+
+          const renderedContainer = document.createElement("div");
+          renderedContainer.className = "recall-docx-viewer";
+          renderedContainer.replaceChildren(
+            ...Array.from(sanitizedDocx.childNodes)
+          );
+          contentEl.replaceChildren(renderedContainer);
+          loadingEl.classList.add("hidden");
+          errorEl.classList.add("hidden");
+          viewerEl.classList.remove("hidden");
+        }
+
+        window.addEventListener("message", (event) => {
+          if (event.source !== window.parent) {
+            return;
+          }
+          if (
+            expectedParentOrigin == null ||
+            event.origin !== expectedParentOrigin
+          ) {
+            return;
+          }
+
+          const data = event.data;
+          if (!data || typeof data !== "object") {
+            return;
+          }
+          if (data.type !== PAYLOAD_MESSAGE_TYPE) {
+            return;
+          }
+          if (channelToken == null || data.channelToken !== channelToken) {
+            return;
+          }
+
+          const payload = data.payload;
+          if (!payload || typeof payload !== "object") {
+            return;
+          }
+
+          if (
+            payload.kind === "success" &&
+            payload.documentData instanceof ArrayBuffer
+          ) {
+            showLoading();
+            renderDocumentData(payload.documentData).catch((error) => {
+              showError("Unable to load the file preview.", true);
+            });
+            return;
+          }
+
+          if (
+            payload.kind === "error" &&
+            typeof payload.message === "string" &&
+            typeof payload.retryable === "boolean"
+          ) {
+            showError(payload.message, payload.retryable);
+          }
+        });
+
+        retryButtonEl.addEventListener("click", () => {
+          showLoading();
+          postMessageToParent({ type: RETRY_MESSAGE_TYPE });
+        });
+
+        postMessageToParent({ type: READY_MESSAGE_TYPE });
+      })();
+    </script>
+  <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9de55be7ac261d93',t:'MTc3Mzg0ODY2OQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

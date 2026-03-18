@@ -1,0 +1,2 @@
+import{c as t}from"./f0a0a9e6-ipaz2hr6ifllfz2s.js";import"./2340486e-maqbvs2h3ity16nw.js";const h=t("Ligature",[["path",{d:"M8 20V8c0-2.2 1.8-4 4-4 1.5 0 2.8.8 3.5 2",key:"1rtphz"}],["path",{d:"M6 12h4",key:"a4o3ry"}],["path",{d:"M14 12h2v8",key:"c1fccl"}],["path",{d:"M6 20h4",key:"1i6q5t"}],["path",{d:"M14 20h4",key:"lzx1xo"}]]);export{h as default};
+//# sourceMappingURL=be809742-iskmt7h8a0jn1fjb.js.map

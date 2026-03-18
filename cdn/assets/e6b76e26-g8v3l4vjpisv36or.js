@@ -1,0 +1,2 @@
+import{c as a}from"./f0a0a9e6-ipaz2hr6ifllfz2s.js";import"./2340486e-maqbvs2h3ity16nw.js";const p=a("FileUp",[["path",{d:"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z",key:"1rqfz7"}],["path",{d:"M14 2v4a2 2 0 0 0 2 2h4",key:"tnqrlb"}],["path",{d:"M12 12v6",key:"3ahymv"}],["path",{d:"m15 15-3-3-3 3",key:"15xj92"}]]);export{p as default};
+//# sourceMappingURL=e6b76e26-g8v3l4vjpisv36or.js.map

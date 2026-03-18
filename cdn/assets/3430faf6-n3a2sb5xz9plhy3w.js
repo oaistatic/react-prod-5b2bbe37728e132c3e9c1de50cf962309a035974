@@ -1,0 +1,2 @@
+import{c as a}from"./f0a0a9e6-ipaz2hr6ifllfz2s.js";import"./2340486e-maqbvs2h3ity16nw.js";const c=a("Snail",[["path",{d:"M2 13a6 6 0 1 0 12 0 4 4 0 1 0-8 0 2 2 0 0 0 4 0",key:"hneq2s"}],["circle",{cx:"10",cy:"13",r:"8",key:"194lz3"}],["path",{d:"M2 21h12c4.4 0 8-3.6 8-8V7a2 2 0 1 0-4 0v6",key:"ixqyt7"}],["path",{d:"M18 3 19.1 5.2",key:"9tjm43"}],["path",{d:"M22 3 20.9 5.2",key:"j3odrs"}]]);export{c as default};
+//# sourceMappingURL=3430faf6-n3a2sb5xz9plhy3w.js.map

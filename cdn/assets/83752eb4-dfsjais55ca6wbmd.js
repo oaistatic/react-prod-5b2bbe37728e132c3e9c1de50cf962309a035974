@@ -1,0 +1,2 @@
+import{c as e}from"./f0a0a9e6-ipaz2hr6ifllfz2s.js";import"./2340486e-maqbvs2h3ity16nw.js";const i=e("Frame",[["line",{x1:"22",x2:"2",y1:"6",y2:"6",key:"15w7dq"}],["line",{x1:"22",x2:"2",y1:"18",y2:"18",key:"1ip48p"}],["line",{x1:"6",x2:"6",y1:"2",y2:"22",key:"a2lnyx"}],["line",{x1:"18",x2:"18",y1:"2",y2:"22",key:"8vb6jd"}]]);export{i as default};
+//# sourceMappingURL=83752eb4-dfsjais55ca6wbmd.js.map

@@ -1,0 +1,2 @@
+import{c as a}from"./f0a0a9e6-ipaz2hr6ifllfz2s.js";import"./2340486e-maqbvs2h3ity16nw.js";const c=a("Ticket",[["path",{d:"M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z",key:"qn84l0"}],["path",{d:"M13 5v2",key:"dyzc3o"}],["path",{d:"M13 17v2",key:"1ont0d"}],["path",{d:"M13 11v2",key:"1wjjxi"}]]);export{c as default};
+//# sourceMappingURL=7db38107-c0hl8opw0ztyvzeu.js.map

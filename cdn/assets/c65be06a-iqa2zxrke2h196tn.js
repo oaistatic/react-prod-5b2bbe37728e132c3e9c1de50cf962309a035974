@@ -1,0 +1,2 @@
+import{Y as t,ag as r}from"./2340486e-maqbvs2h3ity16nw.js";import{ea as o}from"./4813494d-kkrds488ucwbhdy5.js";import{r as a}from"./1a7ebd5f-claho8e6pjyxost1.js";const c={hasRouteMeta:!0,useScrollRestoration:!0};function l({isEnabled:e}){return e?"/library":"/"}const u=()=>{throw a(),r(l({isEnabled:o()}),302)},d=()=>!1,R=t(function(){return null});export{u as clientLoader,R as default,c as handle,d as shouldRevalidate};
+//# sourceMappingURL=c65be06a-iqa2zxrke2h196tn.js.map

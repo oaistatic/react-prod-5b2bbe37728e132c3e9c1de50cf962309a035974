@@ -1,0 +1,2 @@
+import{u,j as p}from"./2340486e-maqbvs2h3ity16nw.js";import{gQ as l,uC as s,uD as m}from"./4813494d-kkrds488ucwbhdy5.js";import{di as R,dj as d,dk as c}from"./1a7ebd5f-claho8e6pjyxost1.js";function y({gizmoId:e,onClose:r}){const{data:t}=l(e),{data:o}=R(s.Gizmo),a=u(),n=d(a,e,s.Gizmo,m.GPTs);if(o==null)return null;const i=t!=null?"Report ".concat(t.gizmo.display.name):"Report";return p.jsx(c,{reasons:o.reasons,submitReport:n,title:i,onClose:r,header:o.header,subHeader:o.header_explanation})}export{y as G};
+//# sourceMappingURL=75ec7fd7-m094e21ihui064s7.js.map

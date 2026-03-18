@@ -1,0 +1,2 @@
+import{_ as e}from"./0cee873e-bl5gm2d22pkq70zc.js";var l=e(()=>"\n  /* Font Awesome icon styling - consolidated */\n  .label-icon {\n    display: inline-block;\n    height: 1em;\n    overflow: visible;\n    vertical-align: -0.125em;\n  }\n  \n  .node .label-icon path {\n    fill: currentColor;\n    stroke: revert;\n    stroke-width: revert;\n  }\n","getIconStyles");export{l as g};
+//# sourceMappingURL=6f62493b-mn9sj3x4m403i1z2.js.map

@@ -1,0 +1,2 @@
+import{c as o}from"./f0a0a9e6-ipaz2hr6ifllfz2s.js";const e=o("UserRound",[["circle",{cx:"12",cy:"8",r:"5",key:"1hypcn"}],["path",{d:"M20 21a8 8 0 0 0-16 0",key:"rfgkzh"}]]),t=Object.freeze(Object.defineProperty({__proto__:null,default:e},Symbol.toStringTag,{value:"Module"}));const c=Object.freeze(Object.defineProperty({__proto__:null,default:e},Symbol.toStringTag,{value:"Module"}));export{e as U,c as a,t as u};
+//# sourceMappingURL=d92b69cf-d5uj1o17cd2suk97.js.map

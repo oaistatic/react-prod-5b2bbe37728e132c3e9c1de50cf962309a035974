@@ -1,0 +1,2 @@
+import{c as s,n as l}from"./2340486e-maqbvs2h3ity16nw.js";import{cN as c,bz as u}from"./1a7ebd5f-claho8e6pjyxost1.js";function f(){"use forget";const t=s.c(3),[o]=l();let r,e;if(t[0]!==o){e=Symbol.for("react.early_return_sentinel");t:{const n=o.get(c);if(!n){e=null;break t}const a=n.trim();r=u.test(a)?a:null}t[0]=o,t[1]=r,t[2]=e}else r=t[1],e=t[2];return e!==Symbol.for("react.early_return_sentinel")?e:r}export{f as u};
+//# sourceMappingURL=cb241c69-jzif9xsw8exvrea1.js.map

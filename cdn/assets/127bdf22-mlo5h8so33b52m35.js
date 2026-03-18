@@ -1,0 +1,2 @@
+import{c}from"./f0a0a9e6-ipaz2hr6ifllfz2s.js";const e=c("Ellipsis",[["circle",{cx:"12",cy:"12",r:"1",key:"41hilf"}],["circle",{cx:"19",cy:"12",r:"1",key:"1wjl8i"}],["circle",{cx:"5",cy:"12",r:"1",key:"1pcz8c"}]]),o=Object.freeze(Object.defineProperty({__proto__:null,default:e},Symbol.toStringTag,{value:"Module"}));const r=Object.freeze(Object.defineProperty({__proto__:null,default:e},Symbol.toStringTag,{value:"Module"}));export{e as E,o as e,r as m};
+//# sourceMappingURL=127bdf22-mlo5h8so33b52m35.js.map
